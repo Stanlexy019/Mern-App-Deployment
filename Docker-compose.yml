@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+
+  mongo:
+    image: mongo
+    container_name: devconnector-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build: .
+    container_name: devconnector-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/devconnector
+    depends_on:
+      - mongo
+
+  frontend:
+    build: ./client
+    container_name: devconnector-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:
